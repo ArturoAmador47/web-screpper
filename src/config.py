@@ -7,12 +7,12 @@ class Settings(BaseSettings):
     """Application settings."""
     
     # OpenAI
-    openai_api_key: str
+    openai_api_key: str = ""
     embedding_model: str = "text-embedding-ada-002"
     
     # Supabase
-    supabase_url: str
-    supabase_key: str
+    supabase_url: str = ""
+    supabase_key: str = ""
     
     # API
     api_host: str = "0.0.0.0"

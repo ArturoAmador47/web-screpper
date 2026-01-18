@@ -5,7 +5,12 @@ from typing import List, Dict, Any
 from datetime import datetime
 from pathlib import Path
 import markdown
-from weasyprint import HTML, CSS
+
+try:
+    from weasyprint import HTML, CSS
+    WEASYPRINT_AVAILABLE = True
+except ImportError:
+    WEASYPRINT_AVAILABLE = False
 
 from src.config import settings
 
@@ -158,6 +163,9 @@ class PDFGenerator:
         title: str = None
     ) -> Path:
         """Generate PDF from articles."""
+        if not WEASYPRINT_AVAILABLE:
+            raise ImportError("WeasyPrint is not installed. Install it with: pip install weasyprint")
+        
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"tech_news_digest_{timestamp}.pdf"
@@ -187,6 +195,9 @@ class PDFGenerator:
         filename: str = None
     ) -> Path:
         """Generate PDF directly from markdown content."""
+        if not WEASYPRINT_AVAILABLE:
+            raise ImportError("WeasyPrint is not installed. Install it with: pip install weasyprint")
+        
         if filename is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"report_{timestamp}.pdf"
