@@ -90,7 +90,7 @@ class NewsAggregator:
         
         return unique_articles
     
-    async def store_articles(
+    def store_articles(
         self,
         articles: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
@@ -98,7 +98,7 @@ class NewsAggregator:
         if not articles:
             return []
         
-        stored = await self.storage.store_articles_batch(articles)
+        stored = self.storage.store_articles_batch(articles)
         logger.info(f"Stored {len(stored)} articles in database")
         return stored
     
@@ -148,7 +148,7 @@ class NewsAggregator:
         # Step 3: Store articles
         stored_articles = []
         if store and processed_articles:
-            stored_articles = await self.store_articles(processed_articles)
+            stored_articles = self.store_articles(processed_articles)
         
         # Step 4: Generate PDF
         pdf_path = None

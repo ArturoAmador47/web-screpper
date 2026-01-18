@@ -1,5 +1,5 @@
 [project]
-name = "web-screpper"
+name = "web-scraper"
 version = "1.0.0"
 description = "Automated tech news aggregator with AI-powered deduplication"
 authors = [{name = "ArturoAmador47"}]

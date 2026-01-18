@@ -21,7 +21,7 @@ class SupabaseStorage:
         )
         self.table_name = "articles"
     
-    async def store_article(
+    def store_article(
         self,
         title: str,
         content: str,
@@ -54,7 +54,7 @@ class SupabaseStorage:
             logger.error(f"Error storing article: {e}")
             return None
     
-    async def store_articles_batch(
+    def store_articles_batch(
         self,
         articles: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
@@ -68,7 +68,7 @@ class SupabaseStorage:
             logger.error(f"Error storing articles batch: {e}")
             return []
     
-    async def search_similar_articles(
+    def search_similar_articles(
         self,
         embedding: List[float],
         threshold: float = 0.85,
@@ -97,7 +97,7 @@ class SupabaseStorage:
             logger.error(f"Error searching similar articles: {e}")
             return []
     
-    async def get_articles(
+    def get_articles(
         self,
         limit: int = 100,
         source: Optional[str] = None,
@@ -122,7 +122,7 @@ class SupabaseStorage:
             logger.error(f"Error retrieving articles: {e}")
             return []
     
-    async def delete_article(self, article_id: int) -> bool:
+    def delete_article(self, article_id: int) -> bool:
         """Delete an article by ID."""
         try:
             self.client.table(self.table_name).delete().eq("id", article_id).execute()

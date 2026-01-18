@@ -1,6 +1,6 @@
 """FastAPI application for the news aggregator."""
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
@@ -87,10 +87,7 @@ async def health_check():
 
 
 @app.post("/scrape", response_model=PipelineResponse)
-async def scrape_news(
-    request: ScrapeRequest,
-    background_tasks: BackgroundTasks
-):
+async def scrape_news(request: ScrapeRequest):
     """
     Scrape news articles from configured sources.
     
@@ -131,7 +128,7 @@ async def get_articles(
         source: Filter by source name
     """
     try:
-        articles = await storage.get_articles(limit=limit, source=source)
+        articles = storage.get_articles(limit=limit, source=source)
         return articles
         
     except Exception as e:
@@ -148,6 +145,14 @@ async def download_pdf(filename: str):
         filename: Name of the PDF file
     """
     try:
+        # Sanitize filename to prevent path traversal
+        import os
+        filename = os.path.basename(filename)
+        
+        # Ensure filename ends with .pdf
+        if not filename.endswith('.pdf'):
+            raise HTTPException(status_code=400, detail="Invalid file type")
+        
         pdf_path = Path(settings.output_dir) / filename
         
         if not pdf_path.exists():
