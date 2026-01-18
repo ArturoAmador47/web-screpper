@@ -1,0 +1,87 @@
+{
+  "name": "Tech News Webhook Trigger",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "tech-news-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "tech-news-webhook"
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8000/webhook/n8n",
+        "method": "POST",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "sources",
+              "value": "={{ $json.body.sources }}"
+            },
+            {
+              "name": "deduplicate",
+              "value": "={{ $json.body.deduplicate ?? true }}"
+            },
+            {
+              "name": "store",
+              "value": "={{ $json.body.store ?? true }}"
+            },
+            {
+              "name": "generate_pdf",
+              "value": "={{ $json.body.generate_pdf ?? true }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Call API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}"
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call API": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
